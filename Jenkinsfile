@@ -27,6 +27,9 @@ pipeline {
         stage('Test') {
             steps {
                 script {
+                    // Clean up any existing container first
+                    sh 'docker rm -f test-python || true'
+                    
                     sh """
                         docker run -d --name test-python -p 8082:5000 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
                         sleep 10
@@ -36,8 +39,7 @@ pipeline {
             }
             post {
                 always {
-                    sh 'docker stop test-python || true'
-                    sh 'docker rm test-python || true'
+                    sh 'docker rm -f test-python || true'
                 }
             }
         }
@@ -59,9 +61,12 @@ pipeline {
     
     post {
         always {
-            node('any') {
-                sh 'docker logout || true'
-                sh 'docker system prune -f || true'
+            script {
+                sh '''
+                    docker logout || true
+                    docker rm -f test-python || true
+                    docker system prune -f || true
+                '''
             }
         }
         success {
