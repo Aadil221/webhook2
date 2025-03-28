@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        DOCKER_IMAGE_NAME = "your-dockerhub-username/python-app"
+        DOCKER_IMAGE_NAME = "aadilnn/python-app"
         DOCKER_IMAGE_TAG = "v${BUILD_NUMBER}"
     }
     
